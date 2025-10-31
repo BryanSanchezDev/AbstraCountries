@@ -1,0 +1,6 @@
+@AbstraCountries.Api_HostAddress = http://localhost:5197
+
+GET {{AbstraCountries.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
