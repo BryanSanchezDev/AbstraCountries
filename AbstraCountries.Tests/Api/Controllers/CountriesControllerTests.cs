@@ -80,15 +80,17 @@ namespace AbstraCountries.Tests.Api.Controllers
     [TestClass]
     public class WhenCreatingCountry : CountriesControllerTests
     {
-        private HttpResponseMessage? _response;
-        private CountryDto? _created;
+        private static HttpResponseMessage? _response;
+        private static CountryDto? _created;
 
-        [TestInitialize]
-        public override async Task BeforeEach()
+        [ClassInitialize]
+        public static async Task BeforeAll(TestContext context)
         {
-            await base.BeforeEach();
+            var test = new WhenCreatingCountry();
+            await test.BeforeEach();
+
             var dto = new CountryDto { Id = "WK", Name = "Wakanda" };
-            _response = await _client!.PostAsJsonAsync("/countries", dto);
+            _response = await test._client!.PostAsJsonAsync("/countries", dto);
 
             if (_response!.IsSuccessStatusCode || _response.StatusCode == HttpStatusCode.Created)
             {
@@ -108,17 +110,22 @@ namespace AbstraCountries.Tests.Api.Controllers
     [TestClass]
     public class WhenUpdatingCountry : CountriesControllerTests
     {
-        private HttpResponseMessage? _response;
-        private CountryDto? _updated;
+        private static HttpResponseMessage? _response;
+        private static CountryDto? _updated;
 
-        [TestInitialize]
-        public override async Task BeforeEach()
+        [ClassInitialize]
+        public static async Task BeforeAll(TestContext context)
         {
-            await base.BeforeEach();
+            var test = new WhenUpdatingCountry();
+            await test.BeforeEach();
 
             var dto = new CountryDto { Id = "CR", Name = "Costa Rica Updated" };
-            _response = await _client!.PostAsJsonAsync("/countries/CR", dto);
-            _updated = await _response.Content.ReadFromJsonAsync<CountryDto>();
+            _response = await test._client!.PutAsJsonAsync("/countries/CR", dto);
+
+            if (_response!.IsSuccessStatusCode)
+            {
+                _updated = await _response.Content.ReadFromJsonAsync<CountryDto>();
+            }
         }
 
         [TestMethod]
@@ -129,7 +136,6 @@ namespace AbstraCountries.Tests.Api.Controllers
         public void ReturnsUpdatedCountry() =>
             Assert.AreEqual("Costa Rica Updated", _updated!.Name);
     }
-
 
     [TestClass]
     public class WhenDeletingCountry : CountriesControllerTests

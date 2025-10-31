@@ -20,9 +20,11 @@ namespace AbstraCountries.Tests.Api
                 services.RemoveAll<AbstraCountriesDbContext>();
 
                 // Add an in-memory DbContext for testing
+                const string dbName = "TestDb";
+
                 services.AddDbContext<AbstraCountriesDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("TestDb");
+                    options.UseInMemoryDatabase(dbName);
                 });
 
                 // Build service provider and seed test data
@@ -31,7 +33,15 @@ namespace AbstraCountries.Tests.Api
                 var db = scope.ServiceProvider.GetRequiredService<AbstraCountriesDbContext>();
                 db.Database.EnsureCreated();
 
-                db.SaveChanges();
+                if (!db.Countries.Any())
+                {
+                    db.Countries.AddRange(
+                        new Country { Id = "CR", Name = "Costa Rica" },
+                        new Country { Id = "US", Name = "United States" }
+                    );
+                    db.SaveChanges();
+                }
+
             });
         }
     }
