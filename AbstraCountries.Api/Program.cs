@@ -50,10 +50,15 @@ builder.Services.AddSwaggerGen(o =>
 builder.Services.AddScoped<ICountryManager, CountryManager>();
 builder.Services.AddScoped<ICountryAccessor, CountryAccessor>();
 
-builder.Services.AddDbContext<AbstraCountriesDbContext>(options =>
+// Only register SQL Server in non-test environments
+if (!builder.Environment.IsEnvironment("Testing"))
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<AbstraCountriesDbContext>(options =>
+    {
+        options.UseSqlServer(connectionString);
+    });
+}
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(o =>

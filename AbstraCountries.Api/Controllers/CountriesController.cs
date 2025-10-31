@@ -60,7 +60,7 @@ namespace AbstraCountries.Api.Controllers
         }
 
 
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Update(string id, [FromBody] CountryDto dto)
         {
             var updated = await _manager.UpdateAsync(id, dto);

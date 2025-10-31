@@ -27,8 +27,9 @@ namespace AbstraCountries.Api.Controllers
             if (dto.Username == "admin" && dto.Password == "password")
             {
                 var token = GenerateJwtToken(dto.Username);
-                return Ok(new { Token = token });
+                return Ok(new { token });
             }
+
             return Unauthorized();
         }
 

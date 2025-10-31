@@ -31,8 +31,18 @@ namespace AbstraCountries.Accessors.Interfaces
 
         public async Task<CountryDto> CreateAsync(CountryDto dto)
         {
+            if (!string.IsNullOrEmpty(dto.Id))
+            {
+                var exists = await _context.Countries.AnyAsync(c => c.Id == dto.Id);
+                if (exists)
+                {
+                    throw new InvalidOperationException($"Country with ID '{dto.Id}' already exists.");
+                }
+            }
+
             var entity = new Country 
             { 
+                Id = dto.Id,
                 Name = dto.Name 
             };
 
